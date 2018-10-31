@@ -10,6 +10,21 @@ Features:
 
 ## Usage
 
+**Prerequisites:** `make`, `docker`, `docker-compose`
+
+**Configuration:** 
+
+Configuration options can be set in the .env file
+
+```
+CAPACITY=1000
+GLOBAL_EXPIRY=60000
+PORT=8080
+REDIS_ADDRESS=redis:6379
+```
+
+**Running:**
+
 ```bash
 # clone the repo
 git clone git@github.com:helloworld/redis-proxy.git
@@ -27,23 +42,15 @@ make run
 make stop
 ```
  
-**Configuration:** Configuration options can be set in the .env file
-
-```
-CAPACITY=1000
-GLOBAL_EXPIRY=60000
-PORT=8080
-REDIS_ADDRESS=redis:6379
-```
-
-**API**:
+**API:**:
 
 - `GET /` shows usage and displays configuration settings for proxy instance
-- 
 - `GET /GET/{key1}` returns the value associated with `key1`. Returns from cache if available, otherwise retrieves from redis
 
 
 ## Architecture Overview
+
+**Components**
 
 There are three components to redis-proxy:
 
@@ -65,7 +72,8 @@ The backing redis instance for the proxy is configurable via the following confi
 
 The HTTP server handling `GET` requests. A request to the endpoint `GET /GET/{key1}` first attempts to retrieve a value from the cache, and if unavailable, retrieves the value from redis. 
 
-**parallel concurrent access**
+
+**Parallel concurrent access:** 
 
 I used a naive implementation to limit the number of clients that are able to concurrently connect. 
 
@@ -99,30 +107,30 @@ Returns a new instance of `Proxy`, which contains an instance of a redis   conne
 - `NewServer(port int, p *Proxy) *http.Server`
 Returns an HTTP server with the two available API endpoints.
 
-**main.go** 
+**`main.go`** 
 
 Instantiates a new `proxy` and `http.Server` using the configurations options passed through the command line, and starts the server.
 
-## Algorithmic Complexity:
+## Algorithmic Complexity
 
 **Cache Operations**
 
-The `groupcache/lru` library provides us with `O(1)` amortized lookup and set value. The additional check whether an entry is expired is a `O(1)` operation, making the overall complexity of all cache operations `O(1)`
+The `groupcache/lru` library provides us with `O(1)` amortized lookup and set value. The additional check whether an entry is expired is a `O(1)` operation, making the overall complexity of all cache operations `O(1)`.
 
 **Proxy Operations**
 
 If the requested `key` is available in the cache, we are able to retrieve the value in `O(1)` time.
 
-Otherwise, we must make a request to redis, which provides `O(1)` amortized lookup time if all the data fits in memory, or `O(1+n/k)` where n is the number of items and k the number of buckets. [source](https://stackoverflow.com/questions/15216897/how-does-redis-claim-o1-time-for-key-lookup)
+Otherwise, we must make a request to redis, which provides `O(1)` amortized lookup time if all the data fits in memory, or `O(1+n/k)` where n is the number of items and k the number of buckets [(source)](https://stackoverflow.com/questions/15216897/how-does-redis-claim-o1-time-for-key-lookup).
 
 ## Time Spent
 
-MVP:  
+**MVP:**  
 Setting up Docker - 15 minutes  
 Implementing cache - 30 minutes  
 Implementing server - 30 minutes  
 
-Final version:  
+**Final version:**  
 Writing cache.go and redis.go - 30 minutes  
 Writing proxy.go - 1 hour  
 Testing - 1 hour  
@@ -131,7 +139,4 @@ Documentation - 30 minutes
 
 ## Omitted requirements:
 
-Unfortunately did not have enough time to implement the `Redis client protocol`requirement
-
-
-
+Unfortunately, I did not have the time to implement the `Redis client protocol` requirement.
