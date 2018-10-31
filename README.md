@@ -42,7 +42,7 @@ make run
 make stop
 ```
  
-**API:**:
+**API:**
 
 - `GET /` shows usage and displays configuration settings for proxy instance
 - `GET /GET/{key1}` returns the value associated with `key1`. Returns from cache if available, otherwise retrieves from redis
@@ -50,7 +50,7 @@ make stop
 
 ## Architecture Overview
 
-**Components**
+**Components:**
 
 There are three components to redis-proxy:
 
