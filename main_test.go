@@ -109,11 +109,12 @@ func TestRequestKeyFromCache(t *testing.T) {
 }
 
 // Test cache expiry
-// 1. Add (key2, value2) to redis
-// 2. Query key2 from proxy
-// 2. Update (key2, value2modified)
-// 3. Query key2 from poxy
-// 3. Check response = value2, since it should be cached
+// 1. Add (key3, value3) to redis
+// 2. Query key3 from proxy
+// 2. Update (key3, value3modified)
+// 4. Wait 200 ms
+// 3. Query key3 from poxy
+// 3. Check response = value3modified, since it should be expired from redis
 func TestCacheExpiry(t *testing.T) {
     p, _ := proxy.New(testRedis, testCapacity, testExpiry, testMaxClients)
     s := proxy.NewServer(testPort, p)
@@ -135,17 +136,17 @@ func TestCacheExpiry(t *testing.T) {
     assert.Equal(t, "value3modified", string(response), "proxy did not query redis for expired value")
 }
 
-// Test cache expiry
-// 1. Add (key2, value2) to redis
-// 2. Query key2 from proxy
-// 2. Update (key2, value2modified)
-// 3. Query key2 from poxy
-// 3. Check response = value2, since it should be cached
+// Test cache eviction
+// 1. Add (key0, value0) ... (key n+1, value n+1) to redis
+// 2. Query (key0, value0) ... (key n+1, value n+1) from proxy
+// 3. Update (key0, value_updated0) ... (key n+1, value_updated n+1)
+// 4. Query key0 from proxy
+// 5. Check response = value_updated, since it should be be evicted and fetch 
+//    the response from cache
 func TestCacheEviction(t *testing.T) {
     p, _ := proxy.New(testRedis, testCapacity, testExpiry, testMaxClients)
     s := proxy.NewServer(testPort, p)
 
-    // Add key, value to redis
     client := getRedisClient(t)
     for i := 0; i < testCapacity + 1; i++ {
         key := fmt.Sprintf("key_eviction_test%d", i)
