@@ -122,21 +122,3 @@ The `groupcache/lru` library provides us with `O(1)` amortized lookup and set va
 If the requested `key` is available in the cache, we are able to retrieve the value in `O(1)` time.
 
 Otherwise, we must make a request to redis, which provides `O(1)` amortized lookup time if all the data fits in memory, or `O(1+n/k)` where n is the number of items and k the number of buckets [(source)](https://stackoverflow.com/questions/15216897/how-does-redis-claim-o1-time-for-key-lookup).
-
-## Time Spent
-
-**MVP:**  
-Setting up Docker - 15 minutes  
-Implementing cache - 30 minutes  
-Implementing server - 30 minutes  
-
-**Final version:**  
-Writing cache.go and redis.go - 30 minutes  
-Writing proxy.go - 1 hour  
-Testing - 1 hour  
-Debugging (total) - 1 hour  
-Documentation - 30 minutes  
-
-## Omitted requirements:
-
-Unfortunately, I did not have the time to implement the `Redis client protocol` requirement.
