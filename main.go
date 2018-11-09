@@ -3,6 +3,7 @@ package main
 import (
     "flag"
     "fmt"
+	"log"
 
     "github.com/helloworld/redis-proxy/proxy"
 )
@@ -20,7 +21,7 @@ func main() {
     // Initialize Proxy
     p, err := proxy.New(*redisAddress, *capacity, *globalExpiry, *maxClients)
     if err != nil {
-        return
+        log.Fatalf("error: %v", err)
     }
 
     // Initialize and start server
