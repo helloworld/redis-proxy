@@ -4,6 +4,12 @@ FROM golang:1.9.2-alpine
 ARG app_env
 ENV APP_ENV $app_env
 
+ENV CAPACITY=1000
+ENV GLOBAL_EXPIRY=60000
+ENV PORT=8080
+ENV REDIS_ADDRESS=redis:6379
+ENV MAX_CLIENTS=5
+
 # Install git
 RUN apk add --no-cache git mercurial
 
