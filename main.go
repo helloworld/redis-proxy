@@ -3,7 +3,7 @@ package main
 import (
     "flag"
     "fmt"
-	"os"
+    "os"
 
     "github.com/helloworld/redis-proxy/proxy"
 )
@@ -18,12 +18,12 @@ var redisAddress = flag.String("redis-address", "", "redis address")
 func main() {
     flag.Parse()
 
-	if r := os.Getenv("REDIS_ADDRESS"); r != "" && *redisAddress == "" {
-		*redisAddress = r
-	}
-	if *redisAddress == "" {
-		*redisAddress = "redis:6379"
-	}
+    if r := os.Getenv("REDIS_ADDRESS"); r != "" && *redisAddress == "" {
+        *redisAddress = r
+    }
+    if *redisAddress == "" {
+        *redisAddress = "redis:6379"
+    }
 
     // Initialize Proxy
     p, err := proxy.New(*redisAddress, *capacity, *globalExpiry, *maxClients)
