@@ -22,7 +22,9 @@ WORKDIR /go/src/github.com/helloworld/redis-proxy
 # CMD dep ensure && fresh
 
 # PRODUCTION:
-CMD dep ensure && go build
+RUN dep ensure
+RUN go build
+CMD ./redis-proxy --capacity $CAPACITY --global-expiry $GLOBAL_EXPIRY --port $PORT --max-clients $MAX_CLIENTS --redis-address $REDIS_ADDRESS
 
 EXPOSE 8080
 
